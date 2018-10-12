@@ -9,17 +9,11 @@ import serial
 import time
 import random
 import threading
+import pygame
+from pygame.locals import *
 
-
-#--------------MENU COMPLETO---------
-    
-#Creacion del GUI
 gui = tkinter.Tk()
-
-#Titulo del GUI
 gui.title("TABLERO WOLF")
-
-#Dimensiones
 gui.geometry("1280x710")
 
 #Variables
@@ -27,11 +21,12 @@ puntaje=0;
 tiempo=0;
 textoPuntaje=tkinter.StringVar()
 textoTiempo=tkinter.StringVar()
+
+
 x=None
 y=None
 z=None
 w=None
-
 a=None
 b=None
 c=None
@@ -41,14 +36,13 @@ g=None
 imagenAleatoria = None
 numero=None
 
-
 #----------------TECLAS ---------------
 h = []
 def keyup(e):
     global h
     if(e.keycode in h):
-        h.pop(h.index(e.keycode))
-        
+        h.pop(h.index(e.keycode))    
+
 def keydown(e):
     global h
     if not e.keycode in h:
@@ -76,14 +70,11 @@ def reducirPuntaje():
 
 def temporizador():
     global tiempo
-    if(tiempo<61 and tiempo >0):
+    if(tiempo<91 and tiempo >0):
         tiempo -= 1
         # Take advantage of the after method of the Label
     canvas.after(1000, temporizador)
     
-
-
-
 canvas = tkinter.Canvas(gui,width=1280,height=710)
 #------------MONTAR IMAGENES--------
 fondo1 = tkinter.PhotoImage(file="img/fondo.png")
@@ -102,15 +93,13 @@ tiempoLabel=tkinter.Label(canvas,textvariable=textoTiempo,fg="white",bg="black",
 puntajeL()
 tiempoL()
 
-#-------------------CARGAR IMAGENES-----------------------------------------
 canvas.create_image(1280/2,710/2,image=fondo1)
-
 
 def aleatorio():
     global imagenAleatoria,numero
     imagenAleatoria = random.choice([uno,dos,tres,cuatro,cinco,seis,siete,ocho,nueve])
-    numero = canvas.create_image(1280/2,710/2,image=imagenAleatoria)
-    
+    numero = canvas.create_image(1280/2,710/2,image=imagenAleatoria)    
+
 aleatorio()
 
 def keyJuego():
@@ -120,7 +109,7 @@ def keyJuego():
         tiempo=0
         puntaje=0
     if(32 in h):
-        tiempo=60
+        tiempo=90
         puntaje=0
     if(49 in h):
         if(imagenAleatoria == uno):
@@ -206,15 +195,12 @@ def keyJuego():
     canvas.after(10,keyJuego)
 
 #--------------WIDGETS------------------
-hilo = threading.Thread(target=temporizador)
-hilo.start()
-# Pone el foco en el canvas
+hiloTemporizador = threading.Thread(target=temporizador)
+hiloTemporizador.start()
 canvas.focus_set()
-# Empaqueta (muestra) los widgets
 canvas.pack()
 keyJuego()
 canvas.bind("<KeyPress>", keydown)#Liga el evento key al canvas
 canvas.bind("<KeyRelease>", keyup)
-
 
 gui.mainloop()
